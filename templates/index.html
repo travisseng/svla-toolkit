@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlideDec - YouTube Video Analysis Tool</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        /* Styles for fuzzy search highlighting */
+        .search-highlight {
+            background-color: rgba(255, 255, 0, 0.4);
+            border-radius: 2px;
+        }
+        
+        .search-highlight.active {
+            background-color: rgba(255, 165, 0, 0.6);
+            font-weight: bold;
+        }
+        
+        .search-highlight .exact-match {
+            background-color: rgba(255, 165, 0, 0.8);
+            font-weight: bold;
+        }
+        
+        .search-highlight.active .exact-match {
+            background-color: rgba(255, 140, 0, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <!-- <header class="app-header">
+        <div class="container">
+            <h1 class="app-title">SlideDec - YouTube Video Analysis Tool</h1>
+        </div>
+    </header> -->
+
+    <div class="container">
+        <div class="input-section">
+            <input type="text" id="youtubeUrl" class="url-input" placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)">
+            <button id="loadVideoBtn" class="btn btn-primary">
+                <i class="fas fa-download"></i> Load Video
+            </button>
+            <input type="file" id="videoFile" accept="video/*" style="display: none;">
+            <button id="uploadVideoBtn" class="btn btn-primary">
+                <i class="fas fa-upload"></i> Upload Video
+            </button>
+            <button id="settingsBtn" class="btn btn-secondary">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+
+        <div id="errorAlert" class="alert alert-error"></div>
+        
+        <div id="loadingIndicator" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading video and processing data...</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Left column: Video player and timeline -->
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <video id="videoPlayer" preload="auto" crossorigin="anonymous" style="cursor: pointer;">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                
+                <div id="videoProgress" class="video-progress-container">
+                    <div id="timeMarker" class="time-marker"></div>
+                    <div id="progressHoverTime" class="progress-hover-time"></div>
+                    <!-- Scene markers will be added here -->
+                </div>
+                
+                <div class="timeline-container">
+                    <div class="timeline-header">
+                        <h3><i class="fas fa-film"></i> Visual Timeline</h3>
+                        <div class="toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="sceneToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span>Show Scene Changes</span>
+                        </div>
+                    </div>
+                    <div class="timeline" id="thumbnailTimeline">
+                        <!-- Thumbnails will be added here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right column: Tabs for transcript, chapters, and scenes -->
+            <div class="content-tabs">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="transcript">
+                        <i class="fas fa-closed-captioning"></i> Transcript
+                    </button>
+                    <button class="tab-btn" data-tab="chapters">
+                        <i class="fas fa-bookmark"></i> Chapters
+                    </button>
+                    <button class="tab-btn" data-tab="scenes">
+                        <i class="fas fa-film"></i> Scene Changes
+                    </button>
+                    <button class="tab-btn" data-tab="slides">
+                        <i class="fas fa-file-alt"></i> Slide Content
+                    </button>
+                </div>
+                
+                <div class="tab-content">
+                    <div class="tab-pane active" id="transcript-tab">
+                        <div class="controls-bar">
+                            <button id="generateSummaryBtn" class="btn btn-accent" disabled>
+                                <i class="fas fa-magic"></i> Generate Summary
+                            </button>
+                            <div class="search-container">
+                                <div class="search-input-wrapper">
+                                    <input type="text" id="transcriptSearch" class="search-input" placeholder="Search transcript...">
+                                    <button id="clearSearchBtn" class="clear-search-btn">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="search-controls">
+                                    <button id="prevSearchBtn" class="search-nav-btn" disabled>
+                                        <i class="fas fa-chevron-up"></i>
+                                    </button>
+                                    <span id="searchResultsCount">0/0</span>
+                                    <button id="nextSearchBtn" class="search-nav-btn" disabled>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="timestampToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span>Show Timestamps</span>
+                            </div>
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="fuzzySearchToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span>Fuzzy Search</span>
+                            </div>
+                        </div>
+                        <div class="tab-body" id="transcriptContainer">
+                            <!-- Transcript lines will be added here -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="chapters-tab">
+                        <div class="tab-body" id="chaptersContainer">
+                            <p>Click "Generate Summary" to create chapter markers from the transcript.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="scenes-tab">
+                        <div class="tab-body" id="scenesContainer">
+                            <!-- Scene markers will be added here -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-pane" id="slides-tab">
+                        <div class="controls-bar">
+                            <div class="search-container">
+                                <div class="search-input-wrapper">
+                                    <input type="text" id="slideSearch" class="search-input" placeholder="Search slide content..." disabled>
+                                    <button id="clearSlideSearchBtn" class="clear-search-btn">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="search-controls">
+                                    <button id="prevSlideSearchBtn" class="search-nav-btn" disabled>
+                                        <i class="fas fa-chevron-up"></i>
+                                    </button>
+                                    <span id="slideSearchResultsCount">0/0</span>
+                                    <button id="nextSlideSearchBtn" class="search-nav-btn" disabled>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-body" id="slideContentContainer">
+                            <div class="coming-soon">
+                                <i class="fas fa-cogs"></i>
+                                <h3>OCR Coming Soon</h3>
+                                <p>Slide content search will be available in a future update.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detection overlay -->
+    <div id="detectionOverlay" class="detection-overlay">
+        <div class="detection-content">
+            <span id="closeDetectionBtn" class="detection-close">&times;</span>
+            <h3><i class="fas fa-search"></i> Object Detections</h3>
+            <div id="detectionImageContainer" class="detection-image-container">
+                <!-- Image and detection boxes will be added here -->
+            </div>
+            <div id="detectionList">
+                <!-- List of detections will be added here -->
+            </div>
+            <button id="debugDetectionsBtn" class="btn btn-primary" style="margin-top: 16px;">
+                <i class="fas fa-bug"></i> Debug Detections
+            </button>
+        </div>
+    </div>
+
+    <!-- Debug overlay -->
+    <div id="debugOverlay" class="debug-overlay">
+        <div class="debug-content">
+            <button id="closeDebugBtn" class="debug-close">&times;</button>
+            <h2>Scene Detection Results</h2>
+            <div id="debugContent"></div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span id="closeSettingsBtn" class="modal-close">&times;</span>
+            <h2><i class="fas fa-cog"></i> Settings</h2>
+            
+            <div class="settings-section">
+                <h3>OCR Preferences</h3>
+                <p class="settings-description">Choose which OCR engine to use for text detection:</p>
+                
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="ocrPreference" value="tesseract" checked>
+                        <span class="radio-custom"></span>
+                        <div class="radio-text">
+                            <strong>Tesseract OCR</strong>
+                            <span class="radio-description">Process individual text detections with Tesseract (default)</span>
+                        </div>
+                    </label>
+                    
+                    <label class="radio-label">
+                        <input type="radio" name="ocrPreference" value="surya">
+                        <span class="radio-custom"></span>
+                        <div class="radio-text">
+                            <strong>Surya OCR</strong>
+                            <span class="radio-description">Process entire images with Surya OCR (better quality but slower)</span>
+                        </div>
+                    </label>
+                    
+                    <label class="radio-label">
+                        <input type="radio" name="ocrPreference" value="both">
+                        <span class="radio-custom"></span>
+                        <div class="radio-text">
+                            <strong>Both Methods</strong>
+                            <span class="radio-description">Use both Tesseract and Surya (most comprehensive but slowest)</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>Transcript Preferences</h3>
+                <p class="settings-description">Choose which transcript source to use:</p>
+                
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="transcriptPreference" value="youtube" checked>
+                        <span class="radio-custom"></span>
+                        <div class="radio-text">
+                            <strong>YouTube Transcript</strong>
+                            <span class="radio-description">Use the transcript provided by YouTube (faster, if available)</span>
+                        </div>
+                    </label>
+                    
+                    <label class="radio-label">
+                        <input type="radio" name="transcriptPreference" value="whisper">
+                        <span class="radio-custom"></span>
+                        <div class="radio-text">
+                            <strong>Whisper Transcript</strong>
+                            <span class="radio-description">Generate transcript using Whisper AI (higher quality but slower)</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <div id="whisperControls" class="settings-controls" style="margin-top: 10px; display: none;">
+                    <button id="generateWhisperBtn" class="btn btn-accent">
+                        <i class="fas fa-microphone"></i> Generate Whisper Transcript
+                    </button>
+                    <div id="whisperProgress" class="progress-container" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">0%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-actions">
+                <button id="saveSettingsBtn" class="btn btn-primary">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="/static/js/index.js"></script>
+    <script>
+    document.getElementById('videoPlayer').addEventListener('click', function() {
+        if (this.paused) {
+            this.play();
+        } else {
+            this.pause();
+        }
+    });
+    </script>
+</body>
+</html> 

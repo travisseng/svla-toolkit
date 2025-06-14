@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+yt-dlp
+youtube-transcript-api
+python-multipart
+jinja2
+google-generativeai
+python-dotenv
+scenedetect
+opencv-python
+ultralytics
+pytesseract
+Pillow
+surya-ocr
+sentence-transformers
+numpy
+faiss-cpu

@@ -1,0 +1,31 @@
+.slide-classification-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    z-index: 2;
+}
+
+.slide-classification-badge.buildup {
+    background-color: #4CAF50;  /* Green for build-up slides */
+}
+
+.slide-classification-badge.new-slide {
+    background-color: #2196F3;  /* Blue for new slides */
+}
+
+.slide-classification-badge i {
+    font-size: 14px;
+}
+
+/* Position the classification badge to not overlap with detection badge */
+.timeline-item:has(.detection-badge) .slide-classification-badge {
+    right: 35px;
+} 

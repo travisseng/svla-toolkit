@@ -1,0 +1,64 @@
+# Generated content
+static/videos/
+static/transcripts/
+static/scenes/
+static/summaries/
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+logs/ 
+
+*.mp4
+*.onnx
+
+.venv/
+
+static/fullsize_images/
+static/thumbnails/
+static/scenes/
+static/summaries/
+static/transcripts/
+static/videos/
+static/thumbnails/
+static/fullsize_images/
+static/thumbnails/
+static/status
+results/
+test.py
