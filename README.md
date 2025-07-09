@@ -58,7 +58,7 @@ The Video Lecture Analysis Toolkit features a web interface designed as an inter
 
 ### Prerequisites
 
-- **Python 3.7+** with pip package manager
+- **Python>=3.10+** with pip package manager
 - **CUDA-capable GPU** (recommended for optimal performance)
 - **FFmpeg** for video processing
 - **Tesseract OCR** for text extraction

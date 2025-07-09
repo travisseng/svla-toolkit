@@ -15,3 +15,5 @@ surya-ocr
 sentence-transformers
 numpy
 faiss-cpu
+faster-whisper
+dill

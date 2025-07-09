@@ -40,13 +40,13 @@ class SummaryProcessor:
             # Generate chapter summary using Gemini
             prompt = f"""Based on the following transcript with timestamps, create chapters that outline the main topics.
 For each chapter, provide:
-The timestamp where the chapter starts (in HH:MM:SS format)
+The timestamp where the chapter starts (in MM:SS format)
 A title
 Format each chapter exactly like this example:
 [
-{{"timestamp": "00:00:00", "title": "Introduction to the topic"}},
-{{"timestamp": "00:02:30", "title": "Key concept explained"}},
-{{"timestamp": "00:05:45", "title": "Practical examples"}}
+{{"timestamp": "00:00", "title": "Introduction to the topic"}},
+{{"timestamp": "02:30", "title": "Key concept explained"}},
+{{"timestamp": "05:45", "title": "Practical examples"}}
 ]
 {full_text}"""
 
