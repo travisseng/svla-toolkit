@@ -127,7 +127,7 @@ The system requires pre-trained models (included in repository):
 1. **Launch the application:**
    ```bash
    # For modular version (recommended)
-   uvicorn main_new:app --reload --host 0.0.0.0 --port 8000
+   uvicorn main:app --reload --host 0.0.0.0 --port 8000
    ```
 
 2. **Access the web interface:**
@@ -284,16 +284,16 @@ WORKDIR /app
 EXPOSE 8000
 
 # Run application
-CMD ["uvicorn", "main_new:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 ### Production Configuration
 ```bash
 # High-performance deployment
-uvicorn main_new:app --workers 4 --host 0.0.0.0 --port 8000 --access-log
+uvicorn main:app --workers 4 --host 0.0.0.0 --port 8000 --access-log
 
 # With SSL (recommended for production)
-uvicorn main_new:app --host 0.0.0.0 --port 443 --ssl-keyfile key.pem --ssl-certfile cert.pem
+uvicorn main:app --host 0.0.0.0 --port 443 --ssl-keyfile key.pem --ssl-certfile cert.pem
 ```
 
 ## Troubleshooting
