@@ -1,8 +1,13 @@
 # Slide Video Lecture Analysis Toolkit 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![ACM MM 2025](https://img.shields.io/badge/ACMMM-2025-1B427D)](https://dl.acm.org/doi/pdf/10.1145/3746027.3756873) 
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.68+-green.svg)](https://fastapi.tiangolo.com)
+
+## News
+[31.10.2025] We got **Best Open-Source SW Paper Award at ACM Multimedia 2025**!
+
+[03.07.2025] Video Lecture Analysis Toolkit got accepted **ACM Multimedia 2025 Open Source Track**!
 
 ## Overview
 
@@ -256,11 +261,6 @@ scenedetect         # Scene detection (BSD License)
 faiss-cpu           # Similarity search (MIT License)
 ```
 
-### License Compatibility
-- **Academic Use**: All components free for research and educational purposes
-- **Commercial Use**: Review individual component licenses (some GPL/AGPL restrictions)
-- **Distribution**: Include all license files when redistributing
-
 ## Performance Optimization
 
 ### Docker Deployment
@@ -337,6 +337,4 @@ pip install --upgrade yt-dlp
 - **Surya OCR**: VikParuchuri for advanced OCR capabilities
 - **FastAPI**: Sebastian Ramirez for the excellent web framework
 
----
 
-**License**: MIT License - see [LICENSE](LICENSE) file for details.
